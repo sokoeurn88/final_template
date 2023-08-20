@@ -75,6 +75,55 @@
             <input type="check" name="choice_{{choice.id}}" id="{{choice.id}}" ...>
             -->
 
+            {% if user.is_authenticated %}
+                <div class="container">
+                    <div class="row">
+                    <div class="col-md-12">
+                        <h1>Course Details</h1>
+                        <p>Course description goes here.</p>
+                        <!-- Example of using Bootstrap Collapse to hide exam -->
+                        <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#exam" aria-expanded="false" aria-controls="exam">
+                        Show Exam
+                        </button>
+                        <div class="collapse" id="exam">
+                        <form method="POST" action="{% url 'submit_exam' %}">
+                            {% csrf_token %}
+                            {% for question in questions %}
+                            <div class="card mt-3">
+                                <div class="card-header">{{ question.text }}</div>
+                                <div class="card-body">
+                                {% for choice in question.choices %}
+                                    <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="{{ question.id }}_{{ choice.id }}" id="{{ question.id }}_{{ choice.id }}">
+                                    <label class="form-check-label" for="{{ question.id }}_{{ choice.id }}">
+                                        {{ choice.text }}
+                                    </label>
+                                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                            {% endfor %}
+                            <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                        </form>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+              
+                {% else %}
+                <div class="rightalign">
+                    <div class="dropdown">
+                        <button class="dropbtn">Visitor</button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'onlinecourse:login' %}">Login</a>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+
+         
+
             <!-- A choice submission form example
             <form id="questionform" action="point to a submit view" method="post">
                         ... for each question in the course ...
